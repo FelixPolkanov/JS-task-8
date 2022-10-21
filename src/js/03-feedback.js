@@ -1,5 +1,4 @@
 // 1. способ Репеты.
-
 import throttle from 'lodash.throttle';
 
 const refs = {
@@ -27,17 +26,17 @@ refs.form.addEventListener('submit', onSubmitBtn)
 
 preventLossFormData(); 
 
-// // function preventLossFormData() {
-// //     if (FormSavedData) {
-// //         let getParsedObjData = JSON.parse(FormSavedData);
-// //         refs.email.value = getParsedObjData.email;
-// //         refs.message.value = getParsedObjData.message;
-// // } 
-// // }
+//  function preventLossFormData() {
+//    if (FormSavedData) {
+//         let getParsedObjData = JSON.parse(FormSavedData);
+//         refs.email.value = getParsedObjData.email;
+//        refs.message.value = getParsedObjData.message;
+//    } 
+//  }
 
 function preventLossFormData() {
     if (FormSavedData) {
-        let getParsedObjData = JSON.parse(FormSavedData);
+        let getParsedObjData = JSON.parse(localStorage.getItem(STORAGE_KEY));
    
         if (getParsedObjData.hasOwnProperty('email')) {
             refs.email.value = getParsedObjData.email;
@@ -52,12 +51,16 @@ function preventLossFormData() {
 }       
          
 function onSubmitBtn(evt) {
-     evt.preventDefault();
-    console.log('Ура, отправили данные и очистили форму и LocalStorage !!!'); 
-    console.log('Последние значения обьекта из LocalStorage: ', JSON.parse(FormSavedData));
-     evt.currentTarget.reset();
+    evt.preventDefault();
+   
+    console.log('Ура, отправили данные и очистили форму и LocalStorage !!!');
+    console.log('Последние значения обьекта из LocalStorage: ', JSON.parse(localStorage.getItem(STORAGE_KEY)));
+    evt.currentTarget.reset();
     localStorage.removeItem(STORAGE_KEY);
-}
+    DataObj = {};
+    console.log("DataObj ", DataObj)
+    }
+
 
 
 
