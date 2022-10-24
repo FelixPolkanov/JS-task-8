@@ -17,7 +17,10 @@ let FormSavedData = localStorage.getItem(STORAGE_KEY);
 
 
 refs.form.addEventListener('input', throttle(evt => {
+
+
     DataObj[evt.target.name] = evt.target.value;
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DataObj))
 }, 500));
 
@@ -26,30 +29,30 @@ refs.form.addEventListener('submit', onSubmitBtn)
 
 preventLossFormData(); 
 
-//  function preventLossFormData() {
-//    if (FormSavedData) {
-//         let getParsedObjData = JSON.parse(FormSavedData);
-//         refs.email.value = getParsedObjData.email;
-//        refs.message.value = getParsedObjData.message;
-//    } 
-//  }
+
 
 function preventLossFormData() {
     if (FormSavedData) {
         let getParsedObjData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        let a = getParsedObjData.email;
+        let b = getParsedObjData.message;
    
-        if (getParsedObjData.hasOwnProperty('email')) {
+        if (getParsedObjData.hasOwnProperty('email') && !getParsedObjData.hasOwnProperty('message')) {
+            refs.email.value = getParsedObjData.email;
+           
+        } else if (!getParsedObjData.hasOwnProperty('email') && getParsedObjData.hasOwnProperty('message')) {
+            refs.message.value = getParsedObjData.message;
+           
+        } else  if (getParsedObjData.hasOwnProperty('email') && getParsedObjData.hasOwnProperty('message')) {
+            refs.message.value = getParsedObjData.message;
             refs.email.value = getParsedObjData.email;
         }
-        else refs.email.value = "";
-       
-        if (getParsedObjData.hasOwnProperty('message')) {
-            refs.message.value = getParsedObjData.message;
-        }
-        else refs.message.value = "";
     }
 }       
-         
+ 
+
+
+
 function onSubmitBtn(evt) {
     evt.preventDefault();
    
