@@ -1,71 +1,37 @@
-// 1. способ Репеты.
+
 import throttle from 'lodash.throttle';
 
-const refs = {
-   email: document.querySelector('.feedback-form input'),
-   message: document.querySelector('.feedback-form textarea'),
-   form: document.querySelector('.feedback-form'),
+const STORAGE_KEY = "feedback-form-state";
+const formEl = document.querySelector('.feedback-form')
+
+
+formEl.addEventListener('submit', onFormMail)
+formEl.addEventListener('input', throttle(onTextInput, 500))
+
+onFormTextarea()
+
+let formData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+function onTextInput(evt) {
+  formData[evt.target.name] = evt.target.value
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
 
-// let TextareaValue;
-// let EmailInputValue;
-
-
-let DataObj = {};
-const STORAGE_KEY = 'feedback-form-state';
-let FormSavedData = localStorage.getItem(STORAGE_KEY);
-
-
-refs.form.addEventListener('input', throttle(evt => {
-
-
-    DataObj[evt.target.name] = evt.target.value;
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DataObj))
-}, 500));
-
-
-refs.form.addEventListener('submit', onSubmitBtn)
-
-preventLossFormData(); 
-
-
-
-function preventLossFormData() {
-    if (FormSavedData) {
-        let getParsedObjData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        let a = getParsedObjData.email;
-        let b = getParsedObjData.message;
-   
-        if (getParsedObjData.hasOwnProperty('email') && !getParsedObjData.hasOwnProperty('message')) {
-            refs.email.value = getParsedObjData.email;
-           
-        } else if (!getParsedObjData.hasOwnProperty('email') && getParsedObjData.hasOwnProperty('message')) {
-            refs.message.value = getParsedObjData.message;
-           
-        } else  if (getParsedObjData.hasOwnProperty('email') && getParsedObjData.hasOwnProperty('message')) {
-            refs.message.value = getParsedObjData.message;
-            refs.email.value = getParsedObjData.email;
-        }
-    }
-}       
- 
-
-
-
-function onSubmitBtn(evt) {
-    evt.preventDefault();
-   
-    console.log('Ура, отправили данные и очистили форму и LocalStorage !!!');
-    console.log('Последние значения обьекта из LocalStorage: ', JSON.parse(localStorage.getItem(STORAGE_KEY)));
+function onFormMail(evt) {
+  evt.preventDefault();
+    console.log(formData);
     evt.currentTarget.reset();
     localStorage.removeItem(STORAGE_KEY);
-    DataObj = {};
-    console.log("DataObj ", DataObj)
-    }
+    formData = {}
+  }
 
-
-
+function onFormTextarea() {
+  const mailFormParse = JSON.parse(localStorage.getItem(STORAGE_KEY))
+  if (mailFormParse) {
+    formEl.elements.email.value = mailFormParse.email || '';
+    formEl.elements.message.value = mailFormParse.message || '';
+  }
+}
 
 
 
